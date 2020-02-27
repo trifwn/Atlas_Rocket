@@ -9,40 +9,32 @@
  * */
 #include "rocket.hpp"
 
-class Parachutes: public Rocket{
+class Parachute: public Rocket{
 public:
-	Parachutes(double initial_height){
-		this->height = initial_height;
+	Parachute(double h){ 
+		this->openHeight = h;
 		state = false;
 	}
-	// Some getters and setters
-	// These are for safety, to be able to control from GROUND STATION (probably)
-	bool getState(){
-		return state;
+	friend Parachute & operator = (const Parachute &p){
+		this->openHeight = p.openHeight;
+		this->state = p.state; 
 	}
-	bool setState(bool s){  // In case the sensors fail
-		this->state = s;
-	}
-	double getHeight(){
-		return height;
-	}
-	double setHeight(double h){ // Maybe have velocity here instead, we'll see
-		this->height = h;
-	}
-
-	void controlChutesLaunch(double h,double v/*, ... ,*/){
-		// Gets live feed from sensors
-		// if velocity is zero , set state to true
-		if(state){ // Since we will run everything once we don't need a while here
-			// need data ... 
-			// if condition 1
+	void controlChutesLaunch(){
+		if(state){
+			if(height <= openHeight){
+				openSmallP();
+				openMainP();
+			}
 		}
 	}
-private:
-	bool state; // true for falling state
-	double height; // the height of the rocket
-	double velocity; // velocity of the rocket every moment
 
+	void checkState(){
+		if(velocity <= 0)  // Considering velocity is positive going up 
+			state = false;
+	}
+private:
+	int openHeight;
+	bool state;
 	// Helping functions
 	void openSmallP(); // Will deploy the small parachute of 
 	void openMainP();

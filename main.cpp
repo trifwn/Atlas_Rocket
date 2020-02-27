@@ -1,14 +1,18 @@
-#include <iostream>
-#include "parachutes.hpp"
-#include "ignition.hpp"
+/*
+
+Here goes the arduino code
+
+*/ 
+
+
+#include "parachutes.hpp" 
 #include "rocket.hpp"
 
 int main(){
-	Parachute chute = new Parachute();
-	IgnitionControl ignSys = new IgnitionControl();
-	Rocket rocket = new Rocket(chute,ignSys);
-	while(){
-
+	Parachute *chute = new Parachute(1050.2); 
+	Rocket *rocket = new Rocket(0.0,chute);
+	while(true){
+		
 	}
 	return 0;
 }
