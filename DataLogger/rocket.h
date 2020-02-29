@@ -1,35 +1,20 @@
 #ifndef ROCKET_HPP
 #define ROCKET_HPP
 
+#include "Arduino.h"
+
 class Rocket{
 public:
-	Rocket(double startHeight,double openHeightP){
-		this->height = startHeight; 
-		this->openHeightP = openHeightP;
-	}
-
-
+	Rocket(double startHeight,double openHeightP);
 	void countDownBeforeLaunch();
 	void startLaunch();
 	void getDataFromSensors();
 	void sendDataEveryToAll();
 	void sendDataToGround();
 
-	void checkState(){
-		if(velocity <= 0.0)  // Considering velocity is positive going up 
-			state = false;
-	}
+	void checkState();
 
-	void controlChuteLaunch(){
-		// If we are falling, 
-		// and parachute isn't open 
-		// and our height is less than the required state
-		// Then open parachute and change the flag to true
-		if(height <= openHeightP && !isParOpen && state){
-				openPar();
-				isParOpen = true;
-		}
-	}
+	void controlChuteLaunch();
 private:
 	bool state; // true for falling state
 	double height; // the height of the rocket
