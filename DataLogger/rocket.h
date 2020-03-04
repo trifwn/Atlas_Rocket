@@ -11,6 +11,7 @@ public:
 	void getDataFromSensors();
 	void sendDataEveryToAll();
 	void sendDataToGround();
+	
 
 	void checkState();
 
@@ -22,17 +23,18 @@ private:
 	
 	// BME 
 	double temperatureBME;
-	double pressure;
-	double altitude;
-	double humidity; 
+	double pressureBME;
+	double altitudeBME;
+	double humidityBME; 	
 
 	// BNO 
-	double theta;
-	double phi;
+	double thetaBNO;
+	double phiBNO;
+	double altitudeBNO;
 	
 	// GPS
-	double latitude;
-	double longitude;
+	double latitudeGPS;
+	double longitudeGPS;
 
 	double maxHeight;
 
