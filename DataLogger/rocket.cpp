@@ -1,20 +1,15 @@
 #include "Arduino.h"
 #include "rocket.h"
 
-void Rocket::checkState(){
-	if(velocity <= 0.0)  // Considering velocity is positive going up 
-		state = false;
-}
-
 void Rocket::controlChuteLaunch(){
     // If we are falling, 
     // and parachute isn't open 
     // and our height is less than the required state
     // Then open parachute and change the flag to true
-    if(height <= openHeightP && !isParOpen && state){
-            openPar();
-            isParOpen = true;
-    }
+    // if(height <= openHeightP && !isParOpen && state){
+    //         openPar();
+    //         isParOpen = true;
+    // }
 }
 
 void Rocket::initializeSensors(){
@@ -75,6 +70,12 @@ void Rocket::displayCalStatus(void){
     system = gyro = accel = mag = 0;
     bno.getCalibration(&system, &gyro, &accel, &mag);
 
+    /* Pass data to variables */
+    this->system = system;
+    this->gyroscope = gyro;
+    this->acceleration = accel;
+    this->magnetometer = mag;
+
     /* The data should be ignored until the system calibration is > 0 */
     Serial.print("\t");
     if (!system)
@@ -93,31 +94,43 @@ void Rocket::displayCalStatus(void){
     Serial.print(mag, DEC);
 }
 
-void Rocket::printEventBNO(sensors_event_t* event) {
+void Rocket::printEvent(sensors_event_t* event) {
     Serial.println();
     Serial.print(event->type);
     double x = -1000000, y = -1000000 , z = -1000000; //dumb values, easy to spot problem
     if (event->type == SENSOR_TYPE_ACCELEROMETER) {
         x = event->acceleration.x;
+        this->acceleration_x = x;
         y = event->acceleration.y;
+        this->acceleration_y = y;
         z = event->acceleration.z;
+        this->acceleration_z = z;
     }
     else if (event->type == SENSOR_TYPE_ORIENTATION) {
         x = event->orientation.x;
+        this->orientation_x = x;
         y = event->orientation.y;
+        this->orientation_y = y;
         z = event->orientation.z;
+        this->orientation_z = z;
     }
     else if (event->type == SENSOR_TYPE_MAGNETIC_FIELD) {
         x = event->magnetic.x;
+        this->magnetic_x = x;
         y = event->magnetic.y;
+        this->magnetic_y = y;
         z = event->magnetic.z;
+        this->magnetic_z = z;
     }
     else if ((event->type == SENSOR_TYPE_GYROSCOPE) || (event->type == SENSOR_TYPE_ROTATION_VECTOR)) {
         x = event->gyro.x;
+        this->gyro_x = x;
         y = event->gyro.y;
+        this->gyro_y = y;
         z = event->gyro.z;
+        this->gyro_z = z;
     }
-
+    
     Serial.print(": x= ");
     Serial.print(x);
     Serial.print(" | y= ");
@@ -127,19 +140,22 @@ void Rocket::printEventBNO(sensors_event_t* event) {
 }
 
 void Rocket::printValuesBME() {
+    this->temperature = bme.readTemperature();
     Serial.print("Temperature = ");
     Serial.print(bme.readTemperature());
     Serial.println(" *C");
 
+    this->pressure = bme.readPressure() / 100.0F; 
     Serial.print("Pressure = ");
-
     Serial.print(bme.readPressure() / 100.0F);
     Serial.println(" hPa");
 
+    this->altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
     Serial.print("Approx. Altitude = ");
     Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
     Serial.println(" m");
 
+    this->humidity = bme.readHumidity();
     Serial.print("Humidity = ");
     Serial.print(bme.readHumidity());
     Serial.println(" %");
@@ -172,7 +188,7 @@ void Rocket::findSensorsID(){
         Serial.println("\n\nCalibration data loaded into BNO055");
         foundCalib = true;
     }
-}
+} // getTemperatureBNO
 
 void Rocket::checkCalibration(){
     /* Crystal must be configured AFTER loading calibration data into BNO055. */
@@ -251,7 +267,5 @@ void Rocket::getNewSensorEvent(){
 }
 
 void Rocket::takeTemperature(){
-    temperatureBNO = bno.getTemp();
-    Serial.print(F("temperature: "));
-    Serial.println(temperatureBNO);
+    temperature = bno.getTemp();
 }

@@ -45,43 +45,38 @@ public:
 	void printValuesBME();
 
 	// Getters and Setters
-	int8_t getTemperatureBNO(){
-		return temperatureBNO;
+	int8_t getTemperature(){
+		return temperature;
 	}
 private:
-	// Functions
-
-	// Variables we are using 
-
-	// Sensors 
-	Adafruit_BME280 bme;
-	Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
-
-	int eeAddress = 0;
-    long bnoID;
-    bool foundCalib = false;
-
-    adafruit_bno055_offsets_t calibrationData;
-    adafruit_bno055_offsets_t newCalib;
-	sensor_t sensor;
-	sensors_event_t event;
-	
-
 	bool state; // true for falling state
 	double height; // the height of the rocket
 	double velocity; // velocity of the rocket every moment
 	
-	// BME 
-	double temperatureBME;
-	double pressureBME;
-	double altitudeBME;
-	double humidityBME; 	
+	/* BME */
+	Adafruit_BME280 bme;
+	double temperature;
+	double pressure;
+	double altitude;
+	double humidity; 	
 
-	// BNO 
-	double thetaBNO;
-	double phiBNO;
-	double altitudeBNO;
-	int8_t temperatureBNO;
+	/* BNO  */
+	Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
+	adafruit_bno055_offsets_t calibrationData;
+    adafruit_bno055_offsets_t newCalib;
+	sensor_t sensor;
+	sensors_event_t event;
+	int eeAddress = 0;
+    long bnoID;
+    bool foundCalib = false;
+	uint8_t system;
+	uint8_t gyroscope;
+	uint8_t acceleration;
+	uint8_t magnetometer;
+	double orientation_x,orientation_y,orientation_z;
+	double acceleration_x,acceleration_y,acceleration_z;
+	double magnetic_x,magnetic_y,magnetic_z;
+	double gyro_x,gyro_y,gyro_z;
 	
 	// GPS
 	double latitudeGPS;
@@ -94,7 +89,6 @@ private:
 	bool isParOpen;
 	
 	void openPar(); // Will deploy the small parachute of  
-
 };
  
 #endif

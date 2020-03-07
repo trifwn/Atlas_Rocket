@@ -38,13 +38,13 @@ void loop(){
     rocket->takeTemperature();
 
     Serial.print(F("temperature: "));
-    Serial.println(rocket->getTemperatureBNO());
+    Serial.println(rocket->getTemperature());
 
     /* Optional: Display calibration status */
     rocket->displayCalStatus();
 
     /* Optional: Display sensor status (debug only) */
-    //displaySensorStatus();
+    //rocket->displaySensorStatus();
 
     /* New line for the next sample */
     Serial.println("");
