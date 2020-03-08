@@ -13,6 +13,7 @@ void Rocket::controlChuteLaunch(){
 }
 
 void Rocket::initializeSensors(){
+
     Serial.println(F("BME280 test"));
     
     if (! bme.begin(0x77, &Wire)) {
@@ -29,7 +30,7 @@ void Rocket::initializeSensors(){
     }
 }
 
-void Rocket::displaySensorDetails(void){
+void Rocket::displayDetailsBNO(void){
     sensor_t sensor;
     bno.getSensor(&sensor);
     Serial.println("------------------------------------");
@@ -44,7 +45,7 @@ void Rocket::displaySensorDetails(void){
     delay(500);
 }
 
-void Rocket::displaySensorStatus(void){
+void Rocket::displayStatusBNO(void){
     /* Get the system status values (mostly for debugging purposes) */
     uint8_t system_status, self_test_results, system_error;
     system_status = self_test_results = system_error = 0;
@@ -137,6 +138,17 @@ void Rocket::printEvent(sensors_event_t* event) {
     Serial.print(y);
     Serial.print(" | z= ");
     Serial.println(z);
+}
+
+void Rocket::getNewSensorEvent(){
+    sensors_event_t orientationData , angVelocityData , linearAccelData;
+    bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
+    bno.getEvent(&angVelocityData, Adafruit_BNO055::VECTOR_GYROSCOPE);
+    bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
+
+    printEvent(&orientationData);
+    printEvent(&angVelocityData);
+    printEvent(&linearAccelData);
 }
 
 void Rocket::printValuesBME() {
@@ -255,17 +267,58 @@ void Rocket::storingCalibrationToEEPROM(){
     Serial.println("\n--------------------------------\n");
 } 
 
-void Rocket::getNewSensorEvent(){
-    sensors_event_t orientationData , angVelocityData , linearAccelData;
-    bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
-    bno.getEvent(&angVelocityData, Adafruit_BNO055::VECTOR_GYROSCOPE);
-    bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
-
-    printEvent(&orientationData);
-    printEvent(&angVelocityData);
-    printEvent(&linearAccelData);
+void Rocket::takeTemperatureBNO(){
+    this->boardTemp = bno.getTemp();
 }
 
-void Rocket::takeTemperature(){
-    temperature = bno.getTemp();
+// GPS functions
+void Rocket::smartdelay(unsigned long ms){
+  unsigned long start = millis();
+  do {
+    while (ss.available())
+      gps.encode(ss.read());
+  } while (millis() - start < ms);
+}
+
+void Rocket::print_float(float val, float invalid, int len, int prec){
+  if (val == invalid){
+    while (len-- > 1)
+      Serial.print('*');
+    Serial.print(' ');
+  }
+  else{
+    Serial.print(val, prec);
+    int vi = abs((int)val);
+    int flen = prec + (val < 0.0 ? 2 : 1); // . and -
+    flen += vi >= 1000 ? 4 : vi >= 100 ? 3 : vi >= 10 ? 2 : 1;
+    for (int i=flen; i<len; ++i)
+      Serial.print(' ');
+  }
+  smartdelay(0);
+}
+
+void Rocket::print_int(unsigned long val, unsigned long invalid, int len){
+  char sz[32];
+  if (val == invalid)
+    strcpy(sz, "*******");
+  else
+    sprintf(sz, "%ld", val);
+  sz[len] = 0;
+  for (int i=strlen(sz); i<len; ++i)
+    sz[i] = ' ';
+  if (len > 0) 
+    sz[len-1] = ' ';
+  Serial.print(sz);
+  smartdelay(0);
+}
+
+void Rocket::printValuesGPS(){
+    gps.f_get_position(&flat, &flon, &age);
+    this->latitudeGPS = flat;
+    this->longitudeGPS = flon;
+    this->age = age;
+
+    print_float(latitudeGPS, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
+    print_float(longitudeGPS, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
+    print_int(age, TinyGPS::GPS_INVALID_AGE, 5);
 }
