@@ -38,18 +38,15 @@
 
 // Adafruit BME280
 #define BME_SCK 13
-#define BME_MISO 12
 #define BME_MOSI 11
 #define BME_SDI BME_MOSI
-#define BME_CS 10
 
-// Adafruit Ultimate GPS
-
+// NEO-6M GPS
+#define GPSBaud = 4800
+#define GPS_SAMPLERATE_DELAY_MS = 1000
 
 // Adafruit BNO055
-
-
 /* Set the delay between fresh samples */
-#define BNO055_SAMPLERATE_DELAY_MS (100)
+#define BNO055_SAMPLERATE_DELAY_MS = 100
 
 #endif // DEFAULTS_H
