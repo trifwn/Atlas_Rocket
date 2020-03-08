@@ -1,20 +1,33 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
+import random 
 
 style.use('fivethirtyeight')
 
-fig = plt.figure()
-ax1 = fig.add_subplot(1,1,1)
+fig1 = plt.figure('x-move on time')
+fig2 = plt.figure('y-move on time')
+fig3 = plt.figure('z-move on time')
+ax1 = fig1.add_subplot(1,1,1)
+ax2 = fig2.add_subplot(1,1,1)
+ax3 = fig3.add_subplot(1,1,1)
 
+def produceNewData():
+	graph_data = open('data.txt','a')
+	x = str(random.randint(1,10))
+	y = str(random.randint(1,1000))
+	z = str(random.randint(1,3000))
+	values = "\n" + x + "," + y + "," + z
+	graph_data.write(values)
 
 def animate(i):
+	produceNewData()
 	x_axis = []
 	x = []
 	y = []
 	z = []	
 	
-	graph_data = open('coordinates.txt','r').read()
+	graph_data = open('data.txt','r').read()
 	lines = graph_data.split('\n')
 	total_elements = 1
 	for line in lines:
@@ -29,14 +42,14 @@ def animate(i):
 			total_elements += 1
 			
 	ax1.clear()
+	ax2.clear()
+	ax3.clear()
+ 
 	ax1.plot(x_axis,x, label = 'x-axis', color = 'g')
-	ax1.plot(x_axis,y, label = 'y-axis', color = 'b')
-	ax1.plot(x_axis,z, label = 'z-axis', color = 'r')
-	plt.xlabel('time')
-	plt.ylabel('distance')
+	ax2.plot(x_axis,y, label = 'y-axis', color = 'b')
+	ax3.plot(x_axis,z, label = 'z-axis', color = 'r')
 
-	plt.title('x-y-z Graph')
-
-ani = animation.FuncAnimation(fig, animate, interval=100)
-
+ani1 = animation.FuncAnimation(fig1, animate, interval=400)
+ani2 = animation.FuncAnimation(fig2, animate, interval=400)
+ani3 = animation.FuncAnimation(fig3, animate, interval=400)
 plt.show()
