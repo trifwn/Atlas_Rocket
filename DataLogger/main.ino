@@ -4,15 +4,20 @@
 #include <Adafruit_BME280.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include <TinyGPS.h>
+#include <SoftwareSerial.h>
 
 #include <rocket.h>
 #include <defaults.h>
 
 Rocket *rocket;
+// The serial connection to the GPS module
+SoftwareSerial ss(4, 3);
 
 void setup(){
     Wire.begin(); // Init I2C bus
     Serial.begin(115200); // Init serial bus
+    ss.begin(GPSBaud);
     
     rocket = new Rocket(); 
     rocket->initializeSensors();
@@ -22,10 +27,10 @@ void setup(){
     delay(1000);
 
     /* Display some basic information on this sensor */
-    rocket->displaySensorDetails();
+    rocket->displayDetailsBNO();
 
     /* Optional: Display current status */
-    rocket->displaySensorStatus();
+    rocket->displayStatusBNO();
 
     rocket->checkCalibration();
     rocket->getCalibrationResults();
@@ -35,16 +40,16 @@ void setup(){
 void loop(){
     rocket->getNewSensorEvent();
     
-    rocket->takeTemperature();
+    rocket->takeTemperatureBNO();
 
-    Serial.print(F("temperature: "));
-    Serial.println(rocket->getTemperature());
+    Serial.print(F("Board temperature: "));
+    Serial.println(rocket->getBoardTemperature());
 
     /* Optional: Display calibration status */
     rocket->displayCalStatus();
 
     /* Optional: Display sensor status (debug only) */
-    //rocket->displaySensorStatus();
+    //rocket->displayStatusBNO();
 
     /* New line for the next sample */
     Serial.println("");
@@ -53,4 +58,8 @@ void loop(){
     delay(BNO055_SAMPLERATE_DELAY_MS);
 
     rocket->printValuesBME();
+
+    rocket->printValuesGPS();
+    
+    smartdelay(GPS_SAMPLERATE_DELAY_MS);
 }

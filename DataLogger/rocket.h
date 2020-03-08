@@ -6,6 +6,8 @@
 #include <Adafruit_BME280.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include <TinyGPS.h>
+#include <SoftwareSerial.h>
 
 #include "Arduino.h"
 
@@ -13,13 +15,6 @@ class Rocket{
 public:
 	Rocket();
 	void initializeSensors();
-	void findSensorsID();
-	void checkCalibration();
-	void getCalibrationResults();
-	void storingCalibrationToEEPROM();
-	void getNewSensorEvent();
-	void takeTemperature();
-
 	void countDownBeforeLaunch();
 	void startLaunch();
 	void getDataFromSensors();
@@ -30,23 +25,39 @@ public:
 
 	void controlChuteLaunch();
 
+	// BNO functions
+	void findSensorsID();
+	void checkCalibration();
+	void getCalibrationResults();
+	void storingCalibrationToEEPROM();
+	void getNewSensorEvent();
+	void takeTemperatureBNO();
+
 	/*  Displays some basic information on this sensor from 
 	the unified sensor API sensor_t type  */
-	void displaySensorDetails(void);
+	void displayDetailsBNO(void);
 
 	/* Display some basic info about the sensor status */
-	void displaySensorStatus(void);
+	void displayStatusBNO(void);
 
 	/* Display sensor calibration status  */
 	void displayCalStatus(void);
 
-	void printEventBNO(sensors_event_t* event);
+	void printEvent(sensors_event_t* event);
 
+	// BME functions
 	void printValuesBME();
 
+	// GPS functions
+	void smartdelay(unsigned long ms);
+	void print_float(float val, float invalid, int len, int prec);
+	void print_int(unsigned long val, unsigned long invalid, int len);
+
+	void printValuesGPS();
+
 	// Getters and Setters
-	int8_t getTemperature(){
-		return temperature;
+	int8_t getBoardTemperature(){
+		return boardTemp;
 	}
 private:
 	bool state; // true for falling state
@@ -69,6 +80,7 @@ private:
 	int eeAddress = 0;
     long bnoID;
     bool foundCalib = false;
+    int8_t boardTemp;
 	uint8_t system;
 	uint8_t gyroscope;
 	uint8_t acceleration;
@@ -79,8 +91,10 @@ private:
 	double gyro_x,gyro_y,gyro_z;
 	
 	// GPS
-	double latitudeGPS;
-	double longitudeGPS;
+	TinyGPS gps;
+	float latitudeGPS;
+	float longitudeGPS;
+	unsigned long age;
 
 	double maxHeight;
 
