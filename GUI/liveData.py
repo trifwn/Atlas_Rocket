@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
-import time
-import csv
 
 style.use('fivethirtyeight')
 
@@ -16,7 +14,7 @@ def animate(i):
 	y = []
 	z = []	
 	
-	graph_data = open('file.txt','r').read()
+	graph_data = open('coordinates.txt','r').read()
 	lines = graph_data.split('\n')
 	total_elements = 1
 	for line in lines:
