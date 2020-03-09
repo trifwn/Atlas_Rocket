@@ -1,0 +1,13 @@
+numpy
+pandas
+
+PyQt5
+pyqtgraph
+PyOpenGL
+
+dash 
+dash-renderer
+dash-html-components
+dash-core-components 
+dash-daq
+plotly
