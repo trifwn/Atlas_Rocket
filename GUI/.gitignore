@@ -1,0 +1,14 @@
+# OS generated files
+.DS_Store
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Flask stuff:
+instance/
+.webassets-cache
