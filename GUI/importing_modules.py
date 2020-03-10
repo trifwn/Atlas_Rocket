@@ -19,4 +19,5 @@ import plotly.graph_objs as go
 from collections import deque
 
 from utils.dataloading import SensorsDataset
+import config 
 from config import BASE_PATH, DATA_PATH
