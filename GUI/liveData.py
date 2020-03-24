@@ -28,8 +28,8 @@ def produceNewData():
 	graph_data.write(values)
 
 def animate(i):
-	for _ in range(1):
-		produceNewData()
+	# for _ in range(5):
+	# 	produceNewData()
 	time = []
 	or_x,or_y,or_z = [],[],[]
 	humidity = []
@@ -58,7 +58,7 @@ def animate(i):
 
 			# Time
 			time.append(total_elements)
-			total_elements += 0.01
+			total_elements += 0.02
 			
 	ax1.clear() 
 	ax2.clear()
@@ -85,3 +85,23 @@ ani1 = animation.FuncAnimation(fig1, animate, interval=250) # x,y,z
 ani2 = animation.FuncAnimation(fig2, animate, interval=250) # humidity
 ani3 = animation.FuncAnimation(fig3, animate, interval=250) # acc x,y,z
 plt.show()
+
+# f = open('data.txt','a')
+# orx,ory,orz = 50,100,50
+# hum = 10000
+# accx,accy,accz = 0,0,0
+# values = str(orx) + "," + str(ory) + "," + str(orz) + "," + str(hum) + "," + str(accx) + "," + str(accy) + "," + str(accz) + "\n"
+
+# f.write(values)
+# for _ in range(5000):
+# 	orx = random.randint(orx,min(orx + 1,2000))
+# 	ory = random.randint(ory,min(ory + 2,3000))
+# 	orz = random.randint(orz,min(orz + 6,40000))
+# 	hum = random.randint(10000,15000)
+# 	accx = random.randint(accx,min(accx + 5,10000))
+# 	accy = random.randint(max(accy - 1,-5000),accy)
+# 	accz = random.randint(accz,min(30000,accz + 5))
+
+# 	values = str(orx) + "," + str(ory) + "," + str(orz) + "," + str(hum) + "," + str(accx) + "," + str(accy) + "," + str(accz) + "\n"
+
+# 	f.write(values)

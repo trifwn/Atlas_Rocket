@@ -77,7 +77,15 @@ app.layout = html.Div([
      Input('graph-update', 'n_intervals')])
 def update_graphs_live(chosen_graphs, n):
     graphs = []
-    update_metrics(config.times, config.temperature, config.pressure, config.humidity, config.altitude, config.orientation, config.velocity, config.acceleration)
+    update_metrics(config.times, 
+                    config.temperature, 
+                    config.pressure, 
+                    config.humidity, 
+                    config.altitude, 
+                    config.orientation, 
+                    config.velocity, 
+                    config.acceleration)
+                    
     if len(chosen_graphs)>2:
         class_choice = 'col s12 m6 l4'
     elif len(chosen_graphs) == 2:
