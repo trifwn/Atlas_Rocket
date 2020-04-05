@@ -56,31 +56,163 @@ def update_metrics(times, temperature, pressure, humidity, altitude, or_x, or_y,
 
     return times, temperature, pressure, humidity, altitude, or_x, or_y, or_z, vel_x, vel_y, vel_z, acc_x, acc_y, acc_z
 
+# Control panel elements
+velocity = html.Div([
+        daq.Gauge(
+            label="Speed",
+            min=0,
+            max=200,
+            showCurrentValue=True,
+            value=0,
+            size=175,
+            units="km/h",
+            color="#00f9ff",
+        )
+    ], n_clicks=0, className="controlElement col m2"
+)
+
+altitude = html.Div([
+        daq.Tank(
+            label="Altitude",
+            min=0,
+            max=4000,
+            value=0,
+            units="meters",
+            showCurrentValue=True,
+            color="#00f9ff",
+        )
+    ], n_clicks=0, className="controlElement col m2"
+)
+
+temperature = html.Div([
+        daq.Tank(
+            label="Temperature",
+            min=0,
+            max=500,
+            value=0,
+            units="ºC",
+            showCurrentValue=True,
+            color="#00f9ff",
+        )
+    ], n_clicks=0, className="controlElement col m2"
+)
+
+fuel = html.Div([
+        daq.GraduatedBar(
+            label="Fuel level",
+            labelPosition="bottom",
+            min=0,
+            max=100,
+            value=100,
+            step=1,
+            showCurrentValue=True,
+            color="#00f9ff",
+        )
+    ], n_clicks=0, className="controlIndicator col m3"
+)
+
+onAir = html.Div([
+        daq.Indicator(
+            label="On air",
+            labelPosition="bottom",
+            value=False,
+            color="#00f9ff",
+            style={"color": "#black"}
+        )
+    ], className="controlIndicator col m1"
+)
+
+parachute = html.Div([
+        daq.Indicator(
+            label="Parachute",
+            labelPosition="bottom",
+            value=False,
+            color="#00f9ff",
+            style={"color": "#black"},
+        )
+    ], className="controlIndicator col m1"
+)
+
+parachute2 = html.Div([
+        daq.Indicator(
+            label="Parachute (backup)",
+            labelPosition="bottom",
+            value=False,
+            color="#00f9ff",
+            style={"color": "#black"},
+       )
+    ], className="controlIndicator col m1"
+)
+
 # The html layout
 app.layout = html.Div([
     html.Div([
-        html.H2('Telemetry GUI',
-            style={'textAlign': 'center'}
-        )
-    ], className="row"),
-    html.Div([
         html.Div([
-            dcc.Dropdown(id='sensor-data-name', 
-                options=[{'label': s, 'value': s} for s in config.data_dict.keys()],
-                 value=['Temperature','Pressure','Humidity'],
-                 placeholder='Choose graphs',
-                 multi=True
-            )
-        ], className="six columns", style={'display': 'block'})
-    ], className="row"),
-    
-    html.Div(children=html.Div(id='graphs'), className='row'),
 
-    dcc.Interval(id='graph-update',
+            html.Div([
+                html.Img(
+                    src=app.get_asset_url("rocket.png"),
+                    id="logo"
+                )
+            ], className="col m3"),
+
+            html.Div([
+                html.H2(
+                    'Telemetry GUI',
+                    id="appName"
+                )
+            ], className="col m6"),
+            
+            html.Div(className="col m3")
+
+        ], className="row header"),
+
+        html.Div([
+            html.Div([
+
+                html.P(
+                    "Choose graphs:"
+                ),
+
+                dcc.Dropdown(
+                    id='sensor-data-name', 
+                    options=[{'label': s, 'value': s} for s in config.data_dict.keys()],
+                    value=['Temperature','Pressure','Humidity'],
+                     placeholder='Choose graphs',
+                     multi=True
+                )
+            ], className="col m12 dropdown")
+        ], className="row"),
+        
+        html.Div(
+            children=html.Div(id='graphs'),
+            className='row'
+        )
+    ], className="content"),
+
+    html.Footer([
+        html.Div([
+
+            html.Div([
+                html.Div([               
+                    velocity,
+                    altitude, 
+                    temperature,
+                    fuel,
+                    onAir,
+                    parachute,
+                    parachute2
+                ], className="controlPanel")
+            ], className="row")
+        ], className="container")
+    ], className="footer"),
+
+    dcc.Interval(
+        id='graph-update',
         interval=800, # in milliseconds
         n_intervals=0
     )
-], className="container", style={'width':'98%','margin-left':10,'margin-right':10,'max-width':50000})
+], className="container", style={'width':'98%','marginLeft':10,'marginRight':10,'maxWidth':50000})
 
 @app.callback(Output('graphs','children'),
     [Input('sensor-data-name', 'value'),
@@ -106,7 +238,7 @@ def update_graphs_live(chosen_graphs, n):
                 config.acc_y, 
                 config.acc_z)
                 
-    if len(chosen_graphs)>2:
+    if len(chosen_graphs) > 2:
         class_choice = 'col s12 m6 l4'
     elif len(chosen_graphs) == 2:
         class_choice = 'col s12 m6 l6'

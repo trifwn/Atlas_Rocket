@@ -1,0 +1,45 @@
+.content {
+  min-height: calc(100vh - 324px);
+}
+
+.footer {
+  height: 304px;
+  background-color: #104E8B;
+}
+
+.controlElement {
+	margin: 39px 0;
+}
+
+.controlIndicator {
+	margin: 120px 0;
+}
+
+
+.dropdown {
+	background-color: #f9f9f9;
+	margin: 15px !important;
+	padding: 15px !important;
+	border-radius: 5px;
+	box-shadow: 2px 2px 2px lightgrey;
+}
+
+#logo {
+	height: 40px;
+	width: auto;
+	margin-top: 32px;
+	margin-bottom: 18px;
+	padding-left: 3%;
+
+}
+
+#appName {
+	text-align: center;
+	color: #768DB7;
+}
+
+/* Normalization css*/
+.Select-value {
+	margin-top: 7px !important;
+	margin-bottom: 7px;
+}
