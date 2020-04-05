@@ -59,9 +59,10 @@ def update_metrics(times, temperature, pressure, humidity, altitude, or_x, or_y,
 # Control panel elements
 velocity = html.Div([
         daq.Gauge(
-            label="Speed",
+            id="panel-velocity",
+            label={"style": {"color": "#fff"}, "label": "Speed"},
             min=0,
-            max=200,
+            max=50,
             showCurrentValue=True,
             value=0,
             size=175,
@@ -73,7 +74,8 @@ velocity = html.Div([
 
 altitude = html.Div([
         daq.Tank(
-            label="Altitude",
+            id="panel-altitude",
+            label={"style": {"color": "#fff"}, "label": "Altitude"},
             min=0,
             max=4000,
             value=0,
@@ -86,9 +88,10 @@ altitude = html.Div([
 
 temperature = html.Div([
         daq.Tank(
-            label="Temperature",
+            id="panel-temperature",
+            label={"style": {"color": "#fff"}, "label": "Temperature"},
             min=0,
-            max=500,
+            max=150,
             value=0,
             units="ºC",
             showCurrentValue=True,
@@ -99,7 +102,8 @@ temperature = html.Div([
 
 fuel = html.Div([
         daq.GraduatedBar(
-            label="Fuel level",
+            id="panel-fuel",
+            label={"style":{"color": "#fff"}, "label":"Fuel level"},
             labelPosition="bottom",
             min=0,
             max=100,
@@ -113,7 +117,8 @@ fuel = html.Div([
 
 onAir = html.Div([
         daq.Indicator(
-            label="On air",
+            id="panel-onAir",
+            label={"style": {"color": "#fff"}, "label": "On air"},
             labelPosition="bottom",
             value=False,
             color="#00f9ff",
@@ -124,7 +129,8 @@ onAir = html.Div([
 
 parachute = html.Div([
         daq.Indicator(
-            label="Parachute",
+            id="panel-parachute",
+            label={"style": {"color": "#fff"}, "label": "Parachute"},
             labelPosition="bottom",
             value=False,
             color="#00f9ff",
@@ -135,7 +141,8 @@ parachute = html.Div([
 
 parachute2 = html.Div([
         daq.Indicator(
-            label="Parachute (backup)",
+            id="panel-parachute2",
+            label={"style": {"color": "#fff"}, "label": "Parachute (backup)"},
             labelPosition="bottom",
             value=False,
             color="#00f9ff",
@@ -322,6 +329,20 @@ def update_graphs_live(chosen_graphs, n):
             print('Wrong data structure')
 
     return graphs
+
+@app.callback([
+        Output("panel-velocity", "value"),
+        Output("panel-altitude", "value"),
+        Output("panel-temperature", "value"),
+    ],
+    [Input('graph-update', 'n_intervals')]
+)
+def update_control_panel(n):
+    '''
+    A function that dynamically fills the control panel.
+    '''
+    return [config.vel_z[-1]/1e3, int(config.altitude[-1]), int(config.temperature[-1])]
+
 
 if __name__ == '__main__':
     config.times, config.temperature, config.pressure, config.humidity, config.altitude, config.or_x, config.or_y, config.or_z, config.vel_x, config.vel_y, config.vel_z, config.acc_x, config.acc_y, config.acc_z = \
